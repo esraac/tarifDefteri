@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
@@ -33,7 +34,7 @@ class ListFragment : Fragment() {
         tarifDao = db.tarifDAO()
     }
     private fun handleResponse(tarifler: List<tarif>){
-        val adapter=tarifAdapter(tarifler)
+        adapter = tarifAdapter(tarifler)
         binding.recyclerView.layoutManager=LinearLayoutManager(requireContext())
         binding.recyclerView.adapter=adapter
 
@@ -55,13 +56,24 @@ class ListFragment : Fragment() {
     }
 
 
-    private fun verileriAl(){
-        mDisposable.add(tarifDao.getAll()
+    private fun verileriAl() {
+        mDisposable.add(
+            tarifDao.getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleResponse)
+                .subscribe(
+                    { tarifler -> handleResponse(tarifler) },
+                    { error -> handleError(error) }
+                )
         )
     }
+
+    private fun handleError(error: Throwable) {
+        Log.e("ListFragment", "Error fetching data", error)
+        Toast.makeText(requireContext(), "Veri alınırken bir hata oluştu", Toast.LENGTH_LONG).show()
+    }
+
+
 
     fun newItem(view: View){
         val action= ListFragmentDirections.actionListFragmentToRecipeFragment(bilgi = "yeni", id = -1)

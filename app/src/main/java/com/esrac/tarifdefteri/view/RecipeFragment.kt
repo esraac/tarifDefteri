@@ -79,13 +79,11 @@ class RecipeFragment : Fragment() {
             println(bilgi)
             if (bilgi=="yeni"){
                 binding.delete.isEnabled=false
-                binding.save.isEnabled=true
                 binding.nameText.setText("")
                 binding.ingredientText.setText("")
                 binding.recipeText.setText("")
             }else{
                 binding.save.isEnabled=false
-                binding.delete.isEnabled=true
                 val id= RecipeFragmentArgs.fromBundle(it).id
                 mDisposable.add(
                     tarifDao.findById(id)
@@ -107,9 +105,9 @@ class RecipeFragment : Fragment() {
     }
 
     fun save(view: View){
-        val isim= binding.nameText.toString()
-        val malzeme=binding.ingredientText.toString()
-        val tarif=binding.recipeText.toString()
+        val isim= binding.nameText.text.toString()
+        val malzeme=binding.ingredientText.text.toString()
+        val tarif=binding.recipeText.text.toString()
 
         if (secilenBitmap != null){
             val kucukBitmap=bitMapKucult(secilenBitmap!!,300)
@@ -123,9 +121,17 @@ class RecipeFragment : Fragment() {
                 tarifDao.insert(tarif)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::handleResponseForInsert)
+                    .subscribe(
+                        { handleResponseForInsert() },
+                        { error -> handleError(error) }
+                    )
             )
+
         }
+    }
+
+    private fun handleError(error: Throwable) {
+        Toast.makeText(requireContext(), "Hata: ${error.message}", Toast.LENGTH_SHORT).show()
     }
 
     private fun handleResponseForInsert(){

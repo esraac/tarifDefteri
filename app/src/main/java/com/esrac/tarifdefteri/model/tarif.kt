@@ -8,13 +8,13 @@ import androidx.room.PrimaryKey
 
 data class tarif (
     @ColumnInfo(name="isim")
-    var isim : String,
+    var isim: String? = null,
     @ColumnInfo(name="malzeme")
-    var malzeme: String,
+    var malzeme: String? = null,
     @ColumnInfo(name="gorsel")
     var gorsel : ByteArray,
     @ColumnInfo(name="tarif")
-    var tarif: String
+    var tarif: String? = null
 ){
     @PrimaryKey(autoGenerate = true)
     var id=0

@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:textSize="24sp"
-        android:text="TextView" />
+        android:fontFamily="sans-serif-medium"
+        android:text="TextView"
+        android:textColor="#750A0A"
+        android:textSize="24sp" />
 </LinearLayout>
